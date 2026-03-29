@@ -30,6 +30,107 @@ end
 
 -- 在加载插件前运行补丁:
 fix_treesitter_glibc()
+-- ==========================================================================
+-- 1. 全自动环境依赖检查与修复 (针对旧 GLIBC 系统优化)
+-- ==========================================================================
+local function ensure_dependencies()
+  local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
+  vim.fn.mkdir(mason_bin, "p")
+
+  -- 待检查的组件列表: { 命令名, 下载地址, 描述 }
+  -- 注意：这里使用的链接尽量指向兼容性好的二进制包
+  local deps = {
+    {
+      "fzf",
+      "https://github.com/junegunn/fzf/releases/download/v0.46.1/fzf-0.46.1-linux_amd64.tar.gz",
+      "FZF (模糊搜索)"
+    },
+    {
+      "rg",
+      "https://github.com/BurntSushi/ripgrep/releases/download/14.1.0/ripgrep-14.1.0-x86_64-unknown-linux-musl.tar.gz",
+      "Ripgrep (实时文本搜索)"
+    },
+    {
+      "fd",
+      "https://github.com/sharkdp/fd/releases/download/v9.0.0/fd-v9.0.0-x86_64-unknown-linux-musl.tar.gz",
+      "FD (快速文件查找)"
+    },
+    {
+      "lazygit",
+      "https://github.com/jesseduffield/lazygit/releases/download/v0.41.0/lazygit_0.41.0_Linux_x86_64.tar.gz",
+      "LazyGit (Git 终端界面)"
+    }
+  }
+
+  -- 检查并下载函数
+  for _, dep in ipairs(deps) do
+    local cmd, url, desc = dep[1], dep[2], dep[3]
+    -- 检查 Mason 目录或系统路径是否存在该命令
+    if vim.fn.executable(cmd) == 0 and vim.fn.executable(mason_bin .. "/" .. cmd) == 0 then
+      print("正在自动安装缺失组件: " .. desc .. "...")
+      
+      local temp_file = "/tmp/lazy_dep.tar.gz"
+      local download_cmd
+      
+      -- 处理不同的压缩包格式
+      if url:match("%.tar%.gz$") then
+        download_cmd = string.format("curl -L -o %s %s && tar -xzf %s -C /tmp", temp_file, url, temp_file)
+        os.execute(download_cmd)
+        -- 找出解压后的二进制文件并移动（处理部分包带层级目录的情况）
+        os.execute(string.format("find /tmp -type f -name '%s' -exec mv {} %s/ \\;", cmd, mason_bin))
+      else
+        -- 直接下载二进制文件 (如 tree-sitter)
+        download_cmd = string.format("curl -L -o %s/%s %s", mason_bin, cmd, url)
+        os.execute(download_cmd)
+      end
+      
+      os.execute("chmod +x " .. mason_bin .. "/" .. cmd)
+    end
+  end
+  
+  -- 强制将 Mason 目录加入当前 Neovim 会话的 PATH
+  vim.env.PATH = mason_bin .. ":" .. vim.env.PATH
+end
+
+-- 执行体检
+ensure_dependencies()
+
+-- ==========================================================================
+-- 2. 原有的 Lazy.nvim 引导与配置
+-- ==========================================================================
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+  local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+  local out = vim.fn.system({ "git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath })
+  if vim.v.shell_error ~= 0 then
+    vim.api.nvim_echo({
+      { "Failed to clone lazy.nvim:\n", "ErrorMsg" },
+      { out, "WarningMsg" },
+      { "\nPress any key to exit..." },
+    }, true, {})
+    vim.fn.getchar()
+    os.exit(1)
+  end
+end
+vim.opt.rtp:prepend(lazypath)
+
+require("lazy").setup({
+  spec = {
+    { "LazyVim/LazyVim", import = "lazyvim.plugins" },
+    -- 启用一些常用的 Extras
+    { import = "lazyvim.plugins.extras.ui.edgy" },
+    { import = "lazyvim.plugins.extras.editor.fzf" },
+    { import = "plugins" },
+  },
+  defaults = { lazy = false, version = false },
+  install = { colorscheme = { "tokyonight" } },
+  checker = { enabled = true, notify = false },
+  performance = {
+    rtp = {
+      disabled_plugins = { "gzip", "tarPlugin", "tohtml", "tutor", "zipPlugin" },
+    },
+  },
+})
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
