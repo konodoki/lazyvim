@@ -42,22 +42,22 @@ local function ensure_dependencies()
   local deps = {
     {
       "fzf",
-      "https://github.com/junegunn/fzf/releases/download/v0.46.1/fzf-0.46.1-linux_amd64.tar.gz",
+      "https://github.com/junegunn/fzf/releases/download/v0.70.0/fzf-0.70.0-linux_amd64.tar.gz",
       "FZF (模糊搜索)"
     },
     {
       "rg",
-      "https://github.com/BurntSushi/ripgrep/releases/download/14.1.0/ripgrep-14.1.0-x86_64-unknown-linux-musl.tar.gz",
+      "https://github.com/BurntSushi/ripgrep/releases/download/15.1.0/ripgrep-15.1.0-aarch64-unknown-linux-gnu.tar.gz",
       "Ripgrep (实时文本搜索)"
     },
     {
       "fd",
-      "https://github.com/sharkdp/fd/releases/download/v9.0.0/fd-v9.0.0-x86_64-unknown-linux-musl.tar.gz",
+      "https://github.com/sharkdp/fd/releases/download/v10.4.2/fd-v10.4.2-aarch64-unknown-linux-musl.tar.gz",
       "FD (快速文件查找)"
     },
     {
       "lazygit",
-      "https://github.com/jesseduffield/lazygit/releases/download/v0.41.0/lazygit_0.41.0_Linux_x86_64.tar.gz",
+      "https://github.com/jesseduffield/lazygit/releases/download/v0.60.0/lazygit_0.60.0_linux_x86_64.tar.gz",
       "LazyGit (Git 终端界面)"
     }
   }
