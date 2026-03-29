@@ -61,7 +61,19 @@ local function ensure_dependencies()
       "LazyGit (Git 终端界面)"
     }
   }
+  local rocks_dir = vim.fn.stdpath("data") .. "/lazy-rocks/hererocks"
+  local rocks_bin = rocks_dir .. "/bin/luarocks"
 
+  -- 检查并安装 LuaRocks (Hererocks 方式)
+  if vim.fn.executable(rocks_bin) == 0 then
+    print("正在为 LazyVim 配置独立的 LuaRocks 环境...")
+    -- 这里我们直接利用 pip 安装 hererocks 并初始化环境
+    local install_rocks = string.format(
+      "pip install --user hererocks && ~/.local/bin/hererocks %s --lua 5.1 --luarocks latest",
+      rocks_dir
+    )
+    os.execute(install_rocks)
+  end
   -- 检查并下载函数
   for _, dep in ipairs(deps) do
     local cmd, url, desc = dep[1], dep[2], dep[3]
@@ -89,7 +101,7 @@ local function ensure_dependencies()
   end
   
   -- 强制将 Mason 目录加入当前 Neovim 会话的 PATH
-  vim.env.PATH = mason_bin .. ":" .. vim.env.PATH
+  vim.env.PATH = rocks_dir .. "/bin:" .. mason_bin .. ":" .. vim.env.PATH
 end
 
 -- 执行体检
