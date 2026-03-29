@@ -10,7 +10,7 @@ local function fix_treesitter_glibc()
     vim.fn.mkdir(mason_bin_dir, "p")
 
     -- 【关键修改点】：请把下面的 URL 换成你上传到 GitHub 的直链
-    local my_custom_url = "https://github.com/你的用户名/你的仓库/releases/download/v0.1/tree-sitter-linux-x64"
+    local my_custom_url = "https://github.com/konodoki/lazyvim/releases/download/tree-sitter/tree-sitter-linux-x64"
 
     print("正在初始化环境：从私有源同步 tree-sitter 兼容组件...")
 
