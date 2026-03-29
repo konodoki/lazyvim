@@ -59,6 +59,18 @@ local function ensure_dependencies()
       "lazygit",
       "https://github.com/jesseduffield/lazygit/releases/download/v0.60.0/lazygit_0.60.0_linux_x86_64.tar.gz",
       "LazyGit (Git 终端界面)"
+    },
+    -- 1. LaTeX 渲染器 (Tectonic 是单文件版，比庞大的 TeXLive 更适合补丁)
+    {
+      "tectonic",
+      "https://github.com/tectonic-typesetting/tectonic/releases/download/tectonic%400.15.0/tectonic-0.15.0-x86_64-unknown-linux-musl.tar.gz",
+      "Tectonic (LaTeX 渲染)"
+    },
+    -- 3. ImageMagick (补全你之前的 magick 报错)
+    {
+      "magick",
+      "https://imagemagick.org/archive/binaries/magick",
+      "ImageMagick (图像转换)"
     }
   }
   local rocks_dir = vim.fn.stdpath("data") .. "/lazy-rocks/hererocks"
@@ -73,17 +85,6 @@ local function ensure_dependencies()
       rocks_dir
     )
     os.execute(install_rocks)
-  end
-  -- 检查 magick (ImageMagick v7+)
-  if vim.fn.executable("magick") == 0 then
-    print("正在安装 ImageMagick (用于图像预览)...")
-    -- 下载官方 AppImage (它是静态打包的，兼容性极好)
-    local magick_url = "https://imagemagick.org/archive/binaries/magick"
-    local download_cmd = string.format(
-      "curl -L -o %s/magick %s && chmod +x %s/magick",
-      mason_bin, magick_url, mason_bin
-    )
-    os.execute(download_cmd)
   end
   -- 检查并下载函数
   for _, dep in ipairs(deps) do
