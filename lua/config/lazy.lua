@@ -74,6 +74,17 @@ local function ensure_dependencies()
     )
     os.execute(install_rocks)
   end
+  -- 检查 magick (ImageMagick v7+)
+  if vim.fn.executable("magick") == 0 then
+    print("正在安装 ImageMagick (用于图像预览)...")
+    -- 下载官方 AppImage (它是静态打包的，兼容性极好)
+    local magick_url = "https://imagemagick.org/archive/binaries/magick"
+    local download_cmd = string.format(
+      "curl -L -o %s/magick %s && chmod +x %s/magick",
+      mason_bin, magick_url, mason_bin
+    )
+    os.execute(download_cmd)
+  end
   -- 检查并下载函数
   for _, dep in ipairs(deps) do
     local cmd, url, desc = dep[1], dep[2], dep[3]
