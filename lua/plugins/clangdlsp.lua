@@ -30,10 +30,9 @@ return {
             "--clang-tidy",
             "--header-insertion=iwyu",
             "--completion-style=detailed",
-            "--function-arg-placeholders",
-            "--fallback-style=llvm",
-	    "--query-driver=/usr/bin/gcc,/usr/bin/g++,/usr/bin/gcc-*,/usr/bin/g++-*,/usr/bin/cc,/usr/bin/c++",
-            
+            "--function-arg-placeholders=true",
+            "--fallback-style=Google",
+            "--query-driver=/usr/bin/gcc,/usr/bin/g++,/usr/bin/gcc-*,/usr/bin/g++-*,/usr/bin/cc,/usr/bin/c++",
           },
           init_options = {
             usePlaceholders = true,
