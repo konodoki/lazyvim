@@ -2,10 +2,7 @@
 
 记得安装
 ```
-sudo apt install python3-venv python3-pip
-sudo apt install nodejs npm
-sudo apt-get install libreadline-dev
-sudo apt install xclip
+sudo apt install python3-venv python3-pip nodejs npm libreadline-dev xclip
 find /usr -name omp.h
 cp "Your omp.h" ~/.local/share/nvim/mason/packages/clangd/clangd_22.1.0/lib/clang/22/include/
 ```
