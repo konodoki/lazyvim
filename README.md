@@ -3,6 +3,7 @@
 记得安装
 ```
 sudo apt install python3-venv python3-pip
+sudo apt install nodejs npm
 sudo apt-get install libreadline-dev
 sudo apt install xclip
 find /usr -name omp.h
