@@ -1,4 +1,8 @@
 # 💤 LazyVim
+```bash
+wget https://github.com/neovim/neovim/releases/download/v0.12.1/nvim-linux-x86_64.appimage -O /usr/bin/nvim
+git clone https://github.com/konodoki/lazyvim.git ~/.config/nvim
+```
 
 记得安装
 ```
